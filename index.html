@@ -32,6 +32,21 @@
     </style>
 </head>
 
+<script>
+const text = "Hi, I'm July 🌙";
+let i = 0;
+
+function typingEffect() {
+  if (i < text.length) {
+    document.getElementById("typing").innerHTML += text.charAt(i);
+    i++;
+    setTimeout(typingEffect, 80);
+  }
+}
+
+typingEffect();
+</script>
+    
 <body>
 <div class="card">
     <h1 id="typing"></h1>
