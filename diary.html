@@ -1026,7 +1026,7 @@ const supabase = window.supabase.createClient(
 
       const { data, error } =
         await supabase
-        .from('diaries')
+        .from('diary')
         .select('*');
 
       if (error) {
