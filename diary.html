@@ -1013,7 +1013,7 @@ const supabase = window.supabase.createClient(
         String(d.getDate()).padStart(2, '0');
     }
 
-    function loadData() {
+    function loadLocalData() {
       try {
         return JSON.parse(localStorage.getItem('moodDiary')) || {};
       } catch {
@@ -1021,6 +1021,42 @@ const supabase = window.supabase.createClient(
       }
     }
 
+    async function loadCloudData() {
+
+      const { data, error } =
+        await supabase
+        .from('diaries')
+        .select('*');
+
+      if (error) {
+        console.error(error);
+        return {};
+      }
+  
+      const result = {};
+
+      data.forEach(entry => {
+            
+        result[entry.diary_date] = {
+    
+          mood: entry.mood || '',
+      
+          text: entry.content || '',
+      
+          tags: entry.tags || [],
+      
+          images: entry.images || [],
+      
+          stickers: entry.stickers || [],
+
+          updatedAt: entry.updated_at
+          
+        };
+
+      });
+  
+      return result;
+    }
     function saveData(data) {
       try {
         localStorage.setItem('moodDiary', JSON.stringify(data));
