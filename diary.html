@@ -1068,7 +1068,7 @@ const supabase = window.supabase.createClient(
       btn.textContent = btn.dataset.origText;
     }
 
-    function saveEntry() {
+    async function saveEntry() {
       const dateStr = dateInput.value;
       if (!selectedMood && !diaryText.value.trim()) {
         showToast('请选择心情或写点什么');
@@ -1085,6 +1085,33 @@ const supabase = window.supabase.createClient(
         updatedAt: new Date().toISOString()
       };
       saveData(data);
+      try {
+        
+        const { error } = await supabase
+          .from('diaries')
+          .upsert({
+            diary_date: dateStr,
+            mood: selectedMood,
+            content: diaryText.value.trim(),
+            tags: selectedTags,
+            images: selectedImages,
+            stickers: selectedStickers,
+            updated_at: new Date().toISOString()
+          });
+        
+        if (error) {
+          console.error(error);
+          showToast('云端保存失败');
+          return;
+        }
+      
+      } catch(err) {
+        
+        console.error(err);
+        showToast('云端保存失败');
+        return;
+      
+      }
       renderList();
       renderStats();
       renderStorageBar();
