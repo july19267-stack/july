@@ -812,6 +812,7 @@ const supabase = window.supabase.createClient(
     const PRESET_TAGS = ['工作', '生活', '学习', '情感'];
 
     let selectedMood = '';
+    let diaryData = {};
     let filterMood = '';
     let selectedTags = [];
     let filterTag = '';
@@ -1066,7 +1067,7 @@ const supabase = window.supabase.createClient(
     }
 
     function loadEntry(dateStr) {
-      const data = loadData();
+      const data = diaryData();
       const entry = data[dateStr];
       if (entry) {
         selectedMood = entry.mood || '';
@@ -1195,7 +1196,7 @@ const supabase = window.supabase.createClient(
     }
 
     function renderList() {
-      const data = loadData();
+      const data = diaryData();
       const keyword = searchInput.value.trim().toLowerCase();
       const dates = Object.keys(data).sort().reverse().filter(date => {
         const entry = data[date];
@@ -1499,15 +1500,19 @@ const supabase = window.supabase.createClient(
     });
 
     // Init
-    const today = getToday();
-    dateInput.value = today;
-    dateInput.max = today;
-    renderStickerPanel();
-    loadEntry(today);
-    renderTagFilter();
-    renderList();
-    renderStats();
-    renderStorageBar();
+    async function init() {
+      const today = getToday();
+      dateInput.max = today;
+      renderStickerPanel();
+      diaryData = await loadCloudData();
+      loadEntry(today);
+      renderTagFilter();
+      renderList();
+      renderStats();
+      renderStorageBar();
+    }
+    init();
+      
   </script>
 </body>
 </html>
