@@ -8,7 +8,6 @@ const supabase = window.supabase.createClient(
   "sb_publishable_AgLT0J9IXG0kgsK3FTzN4Q_X7-nRruF"
 );
 </script>
-  <a href="index.html" class="back-btn">← 返回首页</a>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>心情日记</title>
@@ -709,6 +708,7 @@ const supabase = window.supabase.createClient(
   </style>
 </head>
 <body>
+  <a href="index.html" class="back-btn">← 返回首页</a>
   <div class="container">
     <header>
       <h1>心情日记</h1>
@@ -1067,7 +1067,7 @@ const supabase = window.supabase.createClient(
     }
 
     function loadEntry(dateStr) {
-      const data = diaryData();
+      const data = diaryData;
       const entry = data[dateStr];
       if (entry) {
         selectedMood = entry.mood || '';
@@ -1112,7 +1112,7 @@ const supabase = window.supabase.createClient(
         return;
       }
       setLoading(saveBtn, '保存中...');
-      const data = loadData();
+      const data = diaryData();
       data[dateStr] = {
         mood: selectedMood,
         text: diaryText.value.trim(),
@@ -1121,6 +1121,7 @@ const supabase = window.supabase.createClient(
         stickers: [...selectedStickers],
         updatedAt: new Date().toISOString()
       };
+      diaryData = data;
       saveData(data);
       try {
         
@@ -1160,7 +1161,7 @@ const supabase = window.supabase.createClient(
 
     function deleteEntry() {
       const dateStr = dateInput.value;
-      const data = loadData();
+      const data = diaryData();
       if (!data[dateStr]) {
         showToast('当天没有记录');
         return;
@@ -1168,6 +1169,7 @@ const supabase = window.supabase.createClient(
       if (!confirm('确定要删除这天的记录吗？')) return;
       setLoading(deleteBtn, '删除中...');
       delete data[dateStr];
+      diaryData = data;
       saveData(data);
       selectedMood = '';
       diaryText.value = '';
@@ -1196,7 +1198,7 @@ const supabase = window.supabase.createClient(
     }
 
     function renderList() {
-      const data = diaryData();
+      const data = diaryData;
       const keyword = searchInput.value.trim().toLowerCase();
       const dates = Object.keys(data).sort().reverse().filter(date => {
         const entry = data[date];
